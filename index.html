@@ -8,7 +8,8 @@
     <title>Tools</title>
     <link rel="shortcut icon"
         href="https://p7.hiclipart.com/preview/59/403/716/computer-security-threat-national-cyber-security-awareness-month-proactive-cyber-defence-cyberwarfare-topic-logo.jpg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
 </head>
 
 <body class="alert bg-secondary">
@@ -18,13 +19,12 @@
         <br>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item">
+                <!-- Enlace a la pestaña Deep link -->
                 <a class="nav-link active" data-toggle="pill" href="https://mendozaweb.github.io/test2/">Deep link</a>
             </li>
             <li class="nav-item">
+                <!-- Enlace a la pestaña ImgSku -->
                 <a class="nav-link" data-toggle="pill" href="view.html">ImgSku</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="pill" href="#nomen">Loading</a>
             </li>
         </ul>
 
@@ -35,34 +35,12 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label style="color: beige;">For prod | temporalesapp</label><br>
-                                <label style="color: beige;">0a706d55-8b2c-4d7c-9650-1158c345101e</label>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label style="color: beige;">Dg | CATG1111</label><br>
-                                <label style="color: beige;">-b8d-08007947bd3d</label>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-5">
-                                <input id="cadena" name="cadena" type="text"
-                                    class="form-control alert alert-warning" placeholder="Agregar link de comerTools">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <textarea id="idcadena" class="form-control" rows="1"></textarea>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <button class="btn btn-primary mt-1" id="bndato" type="submit">DATO</button>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
+                                <!-- Input para el nombre del deepLink -->
                                 <input type="text" class="form-control alert alert-warning" id="nameDeep"
                                     name="nameDeep" placeholder="Nombre del deepLink">
                             </div>
                             <div class="form-group col-md-6">
+                                <!-- Input para el ID del deepLink -->
                                 <input type="text" class="form-control alert alert-warning" id="idDeep" name="idDeep"
                                     placeholder="Id del deepLink">
                             </div>
@@ -70,27 +48,34 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-3 alert alert-info">
+                                <!-- Selector para el tipo de deepLink -->
                                 <label for="inputState">Tipo</label>
                                 <select id="tipoDeep" name="tipoDeep" class="form-control">
                                     <option selected>www.tottus.com</option>
                                     <option>api.test.tottus.cl</option>
-                                    <option>fazil-app.com/product-search?key</option>
-                                    <option>fazil-app.com/vendor?contentfulid</option>
+                                    <option>www.tottus.com/product-search?key</option>
+                                    <option>www.tottus.com/vendor?contentfulid</option>
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-4" id="idHijoGroup">
+                                <!-- Input para el ID Hijo (visible solo en ciertos casos) -->
                                 <label for="inputCity">Id Hijo</label>
                                 <input type="text" class="form-control alert alert-info" id="idHijo" name="idHijo">
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-4" id="idPadreGroup">
+                                <!-- Input para el ID Padre (visible solo en ciertos casos) -->
                                 <label for="inputZip">Id Padre</label>
                                 <input type="text" class="form-control alert alert-info" id="idPadre" name="idPadre">
                             </div>
                         </div>
-                        <button class="btn btn-primary mt-2" type="submit">MOSTRAR DATOS</button>
+                        <!-- Botón para mostrar datos -->
+                        <button class="btn btn-primary mt-2" type="button" id="mostrarDatosBtn">MOSTRAR DATOS</button>
+                        <!-- Botón para limpiar campos -->
+                        <button class="btn btn-warning mt-2" type="button" id="limpiarCamposBtn">LIMPIAR CAMPOS</button>
                     </form>
+                    <!-- Área de texto para mostrar la respuesta (DL) -->
                     <textarea id="respuestadeep" class="form-control" rows="4"></textarea>
                     <hr>
                 </div>
@@ -98,20 +83,53 @@
         </div>
     </div>
 
+    <!-- Scripts de jQuery y personalizado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
+        // Evento al enviar el formulario
         formDeep.addEventListener("submit", validarformdeep);
 
-        function validarformdeep(e) {
-            e.preventDefault();
+        $(document).ready(function () {
+            // Evento al cambiar la opción en el selector
+            $('#tipoDeep').change(function () {
+                var selectedOption = $(this).val();
+                
+                // Mostrar o ocultar los inputs de ID Hijo y ID Padre según la opción seleccionada
+                if (selectedOption === 'www.tottus.com' || selectedOption === 'api.test.tottus.cl') {
+                    $('#idHijoGroup, #idPadreGroup').show();
+                } else {
+                    $('#idHijoGroup, #idPadreGroup').hide();
+                }
+            });
 
-            const cadenaF = document.querySelector('#cadena').value;
-            const cadenax = cadenaF.slice(71, -8);
+            // Evento al escribir en el input de ID Deep
+            $('#idDeep').on('input', function () {
+                // Mostrar u ocultar el input de ID Hijo según si hay texto en ID Deep
+                if ($(this).val()) {
+                    $('#idHijoGroup').show();
+                } else {
+                    $('#idHijoGroup').hide();
+                }
+            });
 
+            // Evento al hacer clic en el botón Mostrar Datos
+            $('#mostrarDatosBtn').click(function () {
+                // Llamar a la función para generar y mostrar los datos
+                generarDatos();
+            });
+
+            // Evento al hacer clic en el botón Limpiar Campos
+            $('#limpiarCamposBtn').click(function () {
+                // Llamar a la función para limpiar los campos
+                limpiarCampos();
+            });
+        });
+
+        // Función para generar y mostrar los datos
+        function generarDatos() {
             const idDeep = document.querySelector("#idDeep").value;
             const namedeep = document.querySelector("#nameDeep").value;
             const proces = namedeep.split(" ").join("");
-
             const tipodeep = document.querySelector("#tipoDeep").value;
             const idhijo = document.querySelector("#idHijo").value;
             const idpadre = document.querySelector("#idPadre").value;
@@ -119,13 +137,51 @@
             const respuestadeep = document.getElementById("respuestadeep");
             const idcadena = document.getElementById("idcadena");
 
-            idcadena.textContent = `${cadenax}`;
-            respuestadeep.textContent = `\nCategoria: ${namedeep}\nID: ${idDeep}\n https://${tipodeep}/categories?name=${proces}&id=${idhijo}&landingtonewPLP=true&defaultSelectParentId=${idpadre}&defaultSortBy=Recomendados`;
-            idcadena.reset();
+            // idcadena.textContent = `${cadenax}`;
+
+            // Generar el texto de respuesta según la opción seleccionada
+            if (tipodeep === 'www.tottus.com' || tipodeep === 'api.test.tottus.cl') {
+                respuestadeep.value = `\nCategoria: ${namedeep}\nID: ${idDeep}\n https://${tipodeep}/categories?name=${proces}&id=${idhijo}&landingtonewPLP=true&defaultSelectParentId=${idpadre}&defaultSortBy=Recomendados`;
+            } else if (tipodeep === 'www.tottus.com/product-search?key') {
+                respuestadeep.value = `\nProducto: ${namedeep}\nID: ${idDeep}\n https://www.tottus.com/productdesc?productkey=${idDeep}`;
+            } else {
+                // Agregar más condiciones según tus necesidades
+            }
+
+            // Copiar al portapapeles
+            var textarea = document.createElement("textarea");
+            textarea.value = respuestadeep.value.trim();
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            // Mostrar un mensaje
+            //alert('Enlace copiado al portapapeles');
         }
 
-        let dado = Number((Math.random() * 6).toFixed(0));
-        console.log(dado);
+        // Función para validar el formulario
+        function validarformdeep(e) {
+            e.preventDefault();
+            // Llamar a la función para generar y mostrar los datos
+            generarDatos();
+        }
+
+        // Función para limpiar los campos
+        function limpiarCampos() {
+            document.getElementById("nameDeep").value = "";
+            document.getElementById("idDeep").value = "";
+            document.getElementById("tipoDeep").selectedIndex = 0;
+            document.getElementById("idHijo").value = "";
+            document.getElementById("idPadre").value = "";
+            document.getElementById("respuestadeep").value = "";
+            // Mostrar u ocultar el input de ID Hijo según si hay texto en ID Deep
+            if (document.getElementById("idDeep").value) {
+                $('#idHijoGroup').show();
+            } else {
+                $('#idHijoGroup').hide();
+            }
+        }
     </script>
 </body>
 
